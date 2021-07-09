@@ -1,25 +1,23 @@
-package testboot.demo;
+package com.demo.base;
 
+import com.demo.base.config.IpConfiguration;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
-import org.springframework.util.StringUtils;
-import testboot.demo.config.IpConfiguration;
 
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+
 @Slf4j
 @SpringBootApplication
-public class DemoApplication {
+public class DemoBaseApplication {
 
     public static void main(String[] args) throws UnknownHostException {
-        ConfigurableApplicationContext application = SpringApplication.run(DemoApplication.class, args);
+        ConfigurableApplicationContext application = SpringApplication.run(DemoBaseApplication.class, args);
         Environment env = application.getEnvironment();
 
         String ip = InetAddress.getLocalHost().getHostAddress();
@@ -29,7 +27,10 @@ public class DemoApplication {
         if (path==null || path.isEmpty()) {
             path = "";
         }
-
+        //if (port==null || port.isEmpty()) {
+        //    log.info("can't not get port, so we set it as 8080");
+        //    port = "8080";
+        //}
         log.info("\n----------------------------------------------------------\n\t" +
                 "Application  is running! Access URLs:\n\t" +
                 "Local访问网址: \t\thttp://localhost:" + port + path + "\n\t" +
@@ -37,10 +38,6 @@ public class DemoApplication {
                 "----------------------------------------------------------");
         String jvmName = ManagementFactory.getRuntimeMXBean().getName();
         log.info("当前项目进程号：" + jvmName.split("@")[0]);
-
-        IpConfiguration ipconfig = application.getBean(IpConfiguration.class);
-        InetAddress   address = InetAddress.getLocalHost();
-        System.out.println("端口号"+address.getHostAddress()+",ip:"+ipconfig.getPort());
     }
 
 }
