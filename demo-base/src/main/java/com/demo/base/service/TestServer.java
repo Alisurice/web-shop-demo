@@ -2,9 +2,10 @@ package com.demo.base.service;
 
 import com.demo.mbg.mapper.PmsCabinetMapper;
 import com.demo.mbg.model.PmsCabinet;
-import com.demo.mbg.model.PmsCharge;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -21,6 +22,18 @@ public class TestServer {
     public void testFind(int id){
         System.out.println("test:"+pmsCabinetMapper.selectByPrimaryKey(id));
     }
+
+    @Autowired
+    private RedisTemplate<String,Object> redisTemplate;
+
+    @Cacheable(value = "testCache", key = "'in'",unless = "#result==null")
+    public String testRedis(String in) {
+        redisTemplate.opsForValue().set("ha",in);
+        System.out.println(redisTemplate.opsForValue().get("ha"));
+        return (String) redisTemplate.opsForValue().get("ha");
+    }
+
+
 
     @Transactional()
     public void insertCharge(boolean isTryRollBack) {

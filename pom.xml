@@ -17,15 +17,20 @@
     <!-- 声明子模块 -->
     <modules>
         <module>demo-base</module>
+        <module>demo-common</module>
     </modules>
 
 
     <properties>
         <java.version>1.8</java.version>
         <swagger2.version>2.9.2</swagger2.version>
+        <pagehelper-starter.version>1.3.0</pagehelper-starter.version>
+        <pagehelper.version>5.2.0</pagehelper.version>
     </properties>
-    <dependencies>
 
+    <!--主要放ssm，即springmvc spring mybatis、generator、pagehelper这些基本的、共用的包？然后也放一些共用的工具-->
+    <!--比如lombok、swagger-->
+    <dependencies>
 
         <!--lombok-->
         <dependency>
@@ -37,70 +42,95 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
-
+        <!--spring mvc-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!--切面-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <!--test-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <!--热启动-->
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>
-        <!--<dependency>-->
-        <!--    <groupId>org.springframework.boot</groupId>-->
-        <!--    <artifactId>spring-boot-starter-jdbc</artifactId>-->
-        <!--</dependency>-->
 
+        <!-- swagger -->
         <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${swagger2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${swagger2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis.dynamic-sql</groupId>
+            <artifactId>mybatis-dynamic-sql</artifactId>
+            <version>1.2.1</version>
         </dependency>
 
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
+            <!--通用模块-->
+            <dependency>
+                <groupId>com.demo</groupId>
+                <artifactId>demo-common</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
             <!--基础模块-->
             <dependency>
                 <groupId>com.demo</groupId>
                 <artifactId>demo-base</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
-
+            <!--mybatis generator-->
             <dependency>
-                <groupId>org.mybatis</groupId>
-                <artifactId>mybatis</artifactId>
-                <version>3.5.4</version>
+                <groupId>com.demo</groupId>
+                <artifactId>demo-mbg</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
             </dependency>
 
+            <!--MyBatis分页插件starter-->
             <dependency>
-                <groupId>org.mybatis.generator</groupId>
-                <artifactId>mybatis-generator-core</artifactId>
-                <version>1.3.7</version>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper-starter.version}</version>
             </dependency>
+            <!--mybatis-->
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>2.2.0</version>
+            </dependency>
+            <!--mysql-->
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>8.0.15</version>
             </dependency>
 
-            <!-- swagger -->
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${swagger2.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>${swagger2.version}</version>
-            </dependency>
+
 
         </dependencies>
     </dependencyManagement>

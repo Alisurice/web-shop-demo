@@ -2,10 +2,14 @@ package com.demo.base;
 
 import com.demo.base.config.IpConfiguration;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
@@ -14,6 +18,7 @@ import java.net.UnknownHostException;
 
 @Slf4j
 @SpringBootApplication
+@EnableCaching
 public class DemoBaseApplication {
 
     public static void main(String[] args) throws UnknownHostException {
@@ -38,6 +43,9 @@ public class DemoBaseApplication {
                 "----------------------------------------------------------");
         String jvmName = ManagementFactory.getRuntimeMXBean().getName();
         log.info("当前项目进程号：" + jvmName.split("@")[0]);
+
     }
+
+
 
 }
