@@ -1,5 +1,6 @@
 package com.demo.base.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ public class TestSecurity {
         return "我是管理员";
     }
 
+    @PreAuthorize("hasRole('NORMAL')")
     @GetMapping("/normal")
     public String normal() {
         return "我是普通用户";

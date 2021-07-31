@@ -92,6 +92,12 @@
 
     <dependencyManagement>
         <dependencies>
+            <!--demo的安全模块-->
+            <dependency>
+                <groupId>com.demo</groupId>
+                <artifactId>demo-security</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
             <!--通用模块-->
             <dependency>
                 <groupId>com.demo</groupId>

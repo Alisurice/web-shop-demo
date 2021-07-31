@@ -18,36 +18,30 @@ import org.springframework.security.provisioning.JdbcUserDetailsManager;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .inMemoryAuthentication()
-                .passwordEncoder(NoOpPasswordEncoder.getInstance())
-                .withUser("admin").password("admin").roles("ADMIN")
-                .and().withUser("normal").password("normal").roles("NORMAL")
-                ;
-
+        auth.userDetailsService(userDetailsService())
+                .passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
 
     @Override
     protected void configure(HttpSecurity httpSecurity)throws Exception{
 
-        httpSecurity.authorizeRequests()
-                //antMatchers这些是典型的具体配置，如果SecurityConfig要作为通用模块，这些肯定是要删掉的
-                .antMatchers("/test/echo").permitAll()
-                .antMatchers("/test/admin").hasRole("ADMIN")
-                .antMatchers("/test/normal").access("hasRole('NORMAL')")
+        httpSecurity
+                .authorizeRequests()
                 .anyRequest().authenticated()
+
                 .and()
                 // <Y> 设置 Form 表单登录,这个是必须的,没有这个就没有登录页面
-                .formLogin()
-//                    .loginPage("/login") // 登录 URL 地址
+                .formLogin() //.loginPage("/login") // 登录 URL 地址
                 .permitAll() // 所有用户可访问
+
                 .and()
                 // 配置退出相关
-                .logout()
-//                    .logoutUrl("/logout") // 退出 URL 地址
-                .permitAll(); // 所有用户可访问
+                .logout()  //. logoutUrl("/logout") // 退出 URL 地址
+                .permitAll();
+
 
     }
 
