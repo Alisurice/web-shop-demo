@@ -14,8 +14,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 
-@Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
@@ -34,6 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity)throws Exception{
 
         httpSecurity.authorizeRequests()
+                //antMatchers这些是典型的具体配置，如果SecurityConfig要作为通用模块，这些肯定是要删掉的
                 .antMatchers("/test/echo").permitAll()
                 .antMatchers("/test/admin").hasRole("ADMIN")
                 .antMatchers("/test/normal").access("hasRole('NORMAL')")
