@@ -18,6 +18,8 @@ public class TestSecurity {
         return "我是首页";
     }
 
+    //加不加role前缀都行。因为这里用的是hasRole。或许加了更好？
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
     public String admin() {
         return "我是管理员";
