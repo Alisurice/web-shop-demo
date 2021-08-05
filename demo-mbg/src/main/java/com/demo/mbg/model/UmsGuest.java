@@ -1,26 +1,18 @@
 package com.demo.mbg.model;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 
-import java.util.Collection;
-import java.util.Set;
-
-public class UmsAdmin implements  UserDetails {
+public class UmsGuest implements Serializable {
+    @ApiModelProperty(value = "自增id，用于唯一标识一个账户")
     private Integer id;
 
+    @ApiModelProperty(value = "登录账号")
     private String username;
 
     private String password;
 
     private static final long serialVersionUID = 1L;
-
-    @Getter
-    @Setter
-    private Set<SimpleGrantedAuthority> permissions;
 
     public Integer getId() {
         return id;
@@ -34,36 +26,9 @@ public class UmsAdmin implements  UserDetails {
         return username;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
     public void setUsername(String username) {
         this.username = username;
     }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return permissions;
-    }
-
-
 
     public String getPassword() {
         return password;
@@ -86,6 +51,4 @@ public class UmsAdmin implements  UserDetails {
         sb.append("]");
         return sb.toString();
     }
-
-
 }

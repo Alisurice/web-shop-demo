@@ -1,13 +1,7 @@
 package com.demo.base.service;
 
-import com.demo.mbg.mapper.UmsAdminDynamicSqlSupport;
 import com.demo.mbg.mapper.UmsAdminMapper;
 import com.demo.mbg.model.UmsAdmin;
-import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.SqlBuilder;
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,13 +9,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
-import static org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils.select;
-import static org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils.selectList;
 
 @Service
 public class UmsAdminDetailsService implements UserDetailsService {
