@@ -11,7 +11,9 @@ spring:
       host: localhost
       database: test
       port: 27017
-
+  devtools:
+    restart:
+      enabled: true
 
 
 # 自定义redis key
@@ -22,6 +24,36 @@ redis:
     expire:
       authCode: 120 # 验证码超期时间
 
+jwt:
+  tokenHeader: Authorization #JWT存储的请求头
+  secret: demo-base-secret #JWT加解密使用的密钥
+  expiration: 604800 #JWT的超期限时间(60*60*24*7)
+  tokenHead: 'Bearer '  #JWT负载中拿到开头
 
+secure:
+  ignored:
+    urls: #安全路径白名单
+      - /swagger-ui.html
+      - /swagger-resources/**
+      - /swagger/**
+      - /**/v2/api-docs
+      - /**/*.js
+      - /**/*.css
+      - /**/*.png
+      - /**/*.ico
+      - /webjars/springfox-swagger-ui/**
+      - /actuator/**
+      - /druid/**
+      - /admin/login
+      - /admin/register
+      - /admin/info
+      - /admin/logout
+      - /minio/upload
 
+Spring:
 
+logging:
+  level:
+    com.demo.base: debug
+#    root: debug
+    com.demo.security: debug
