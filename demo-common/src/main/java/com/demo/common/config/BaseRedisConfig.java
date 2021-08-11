@@ -1,13 +1,12 @@
 package com.demo.common.config;
 
+import com.demo.common.service.RedisService;
+import com.demo.common.service.impl.RedisServiceImpl;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
-
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
@@ -22,32 +21,20 @@ import java.time.Duration;
 
 /**
  * Redis基础配置
+ * Created by macro on 2020/6/19.
  */
-@Configuration
-@EnableCaching
 public class BaseRedisConfig {
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-
-
+        RedisSerializer<Object> serializer = redisSerializer();
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
-
-        //序列化操作 Json序列化
-        RedisSerializer<Object> serializer = redisSerializer();
-        //key采用String的序列化方式
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        //value序列化方式采用jackson
         redisTemplate.setValueSerializer(serializer);
-        //hash的key也采用String的序列化方式
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        //hash的value序列化方式采用jackson
         redisTemplate.setHashValueSerializer(serializer);
-        //把所有的properties Set进去
         redisTemplate.afterPropertiesSet();
-
-        //redisTemplate.setConnectionFactory(redisConnectionFactory);
         return redisTemplate;
     }
 
@@ -73,5 +60,9 @@ public class BaseRedisConfig {
     }
 
 
+    @Bean
+    public RedisService redisService(){
+        return new RedisServiceImpl();
+    }
 
 }

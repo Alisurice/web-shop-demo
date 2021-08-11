@@ -1,12 +1,16 @@
 package com.demo.security.config;
 
-import com.demo.security.component.JwtAuthenticationTokenFilter;
-import com.demo.security.component.RestAuthenticationEntryPoint;
-import com.demo.security.component.RestfulAccessDeniedHandler;
+import com.demo.security.component.*;
 import com.demo.security.util.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.AuthenticatedVoter;
+import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -14,7 +18,12 @@ import org.springframework.security.config.annotation.web.configurers.Expression
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 /**
@@ -22,7 +31,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * Unsatisfied dependency expressed through field 'jwtTokenUtil'
  */
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
+    @Autowired(required = false)
+    private DynamicSecurityService dynamicSecurityService;
 
     @Override
     //注意这里调用的是
@@ -35,8 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity)throws Exception{
 
-        log.debug("SecurityConfig debug级日志");
-        log.debug("ignoreUrlsConfig :{}",ignoreUrlsConfig().getUrls());
+        //log.debug("ignoreUrlsConfig :{}",ignoreUrlsConfig().getUrls());
 
         ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry
                 registry = httpSecurity.authorizeRequests();
@@ -51,9 +60,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
 
         registry.and()
-                .authorizeRequests().anyRequest().authenticated()
+                .authorizeRequests().anyRequest().authenticated();
+
+        // 使用自定义的 accessDecisionManager
+        if(dynamicSecurityService != null){
+            registry.accessDecisionManager(accessDecisionManager());
+        }
+
                 // 关闭跨站请求防护及不使用session
-                .and()
+        registry.and()
                 .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -117,6 +132,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() {
         return new JwtAuthenticationTokenFilter();
+    }
+
+
+
+    @ConditionalOnBean(name = "dynamicSecurityService")
+    @Bean
+    public AccessDecisionManager accessDecisionManager() {
+        // 构造一个新的AccessDecisionManager 放入两个投票器
+        List<AccessDecisionVoter<?>> decisionVoters
+                = Arrays.asList(new WebExpressionVoter(), accessDecisionProcessor(), new AuthenticatedVoter());
+        return new UnanimousBased(decisionVoters);
+    }
+    @ConditionalOnBean(name = "dynamicSecurityService")
+    @Bean
+    public AccessDecisionVoter<FilterInvocation> accessDecisionProcessor() {
+        return new DynamicSecurityDecisionVoter();
+    }
+    @ConditionalOnBean(name = "dynamicSecurityService")
+    @Bean
+    public DynamicSecurityMetadataSource dynamicSecurityMetadataSource() {
+        return new DynamicSecurityMetadataSource();
     }
 
 

@@ -23,11 +23,12 @@ mybatis:
 
 # 自定义redis key
 redis:
+  database: mall
   key:
-    prefix:
-      authCode: "portal:authCode:"
-    expire:
-      authCode: 120 # 验证码超期时间
+    admin: 'ums:admin'
+    resourceList: 'ums:resourceList'
+  expire:
+    common: 86400 # 24小时
 
 jwt:
   tokenHeader: Authorization #JWT存储的请求头

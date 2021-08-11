@@ -31,7 +31,11 @@
     <!--主要放ssm，即springmvc spring mybatis、generator、pagehelper这些基本的、共用的包？然后也放一些共用的工具-->
     <!--比如lombok、swagger-->
     <dependencies>
-
+        <!--SpringBoot校验框架-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
         <!--JWT(Json Web Token)登录支持-->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
