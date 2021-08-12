@@ -1,4 +1,4 @@
-package com.demo.base.service;
+package com.demo.base.service.ums;
 
 
 import com.demo.mbg.model.UmsAdmin;

@@ -1,8 +1,8 @@
-package com.demo.base.service.impl;
+package com.demo.base.service.impl.ums;
 
 import cn.hutool.core.util.StrUtil;
-import com.demo.base.service.UmsAdminCacheService;
-import com.demo.base.service.UmsResourceService;
+import com.demo.base.service.ums.UmsAdminCacheService;
+import com.demo.base.service.ums.UmsResourceService;
 import com.demo.mbg.mapper.UmsResourceMapper;
 import com.demo.mbg.model.UmsResource;
 import com.demo.mbg.model.UmsResourceExample;

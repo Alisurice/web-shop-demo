@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
-import org.springframework.security.access.vote.AuthenticatedVoter;
 import org.springframework.security.access.vote.UnanimousBased;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -20,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.Arrays;
@@ -64,7 +65,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 使用自定义的 accessDecisionManager
         if(dynamicSecurityService != null){
-            registry.accessDecisionManager(accessDecisionManager());
+            log.debug("###accessDecisionManager");
+            registry.accessDecisionManager(accessDecisionManager())
+                    .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                        @Override
+                        public <O extends FilterSecurityInterceptor> O postProcess(
+                                O fsi) {
+                            fsi.setSecurityMetadataSource(dynamicSecurityMetadataSource());
+                            return fsi;
+                        }
+                    });
+
         }
 
                 // 关闭跨站请求防护及不使用session
@@ -141,7 +152,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AccessDecisionManager accessDecisionManager() {
         // 构造一个新的AccessDecisionManager 放入两个投票器
         List<AccessDecisionVoter<?>> decisionVoters
-                = Arrays.asList(new WebExpressionVoter(), accessDecisionProcessor(), new AuthenticatedVoter());
+                = Arrays.asList(new WebExpressionVoter(), accessDecisionProcessor());
         return new UnanimousBased(decisionVoters);
     }
     @ConditionalOnBean(name = "dynamicSecurityService")
@@ -152,6 +163,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @ConditionalOnBean(name = "dynamicSecurityService")
     @Bean
     public DynamicSecurityMetadataSource dynamicSecurityMetadataSource() {
+        log.debug("########DynamicSecurityMetadataSource");
         return new DynamicSecurityMetadataSource();
     }
 

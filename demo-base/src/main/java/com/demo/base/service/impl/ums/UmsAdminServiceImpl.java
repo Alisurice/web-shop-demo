@@ -1,13 +1,13 @@
-package com.demo.base.service.impl;
+package com.demo.base.service.impl.ums;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.demo.base.bo.AdminUserDetails;
-import com.demo.base.dao.UmsAdminRoleRelationDao;
-import com.demo.base.service.UmsAdminCacheService;
-import com.demo.base.service.UmsAdminService;
-import com.demo.base.vo.UmsAdminParam;
-import com.demo.base.vo.UpdateAdminPasswordParam;
+import com.demo.base.dao.ums.UmsAdminRoleRelationDao;
+import com.demo.base.service.ums.UmsAdminCacheService;
+import com.demo.base.service.ums.UmsAdminService;
+import com.demo.base.vo.ums.UmsAdminParam;
+import com.demo.base.vo.ums.UpdateAdminPasswordParam;
 import com.demo.mbg.mapper.UmsAdminLoginLogMapper;
 import com.demo.mbg.mapper.UmsAdminMapper;
 import com.demo.mbg.mapper.UmsAdminRoleRelationMapper;

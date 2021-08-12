@@ -1,4 +1,4 @@
-package com.demo.base.dao;
+package com.demo.base.dao.ums;
 
 import com.demo.mbg.model.UmsAdminRoleRelation;
 import com.demo.mbg.model.UmsResource;

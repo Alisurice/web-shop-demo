@@ -1,7 +1,7 @@
-package com.demo.base.service;
+package com.demo.base.service.ums;
 
-import com.demo.base.vo.UmsAdminParam;
-import com.demo.base.vo.UpdateAdminPasswordParam;
+import com.demo.base.vo.ums.UmsAdminParam;
+import com.demo.base.vo.ums.UpdateAdminPasswordParam;
 import com.demo.mbg.model.UmsAdmin;
 import com.demo.mbg.model.UmsResource;
 import com.demo.mbg.model.UmsRole;

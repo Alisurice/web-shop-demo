@@ -1,4 +1,4 @@
-package com.demo.base.vo;
+package com.demo.base.vo.ums;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

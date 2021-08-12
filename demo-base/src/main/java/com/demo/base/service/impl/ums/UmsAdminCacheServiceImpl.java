@@ -1,9 +1,9 @@
-package com.demo.base.service.impl;
+package com.demo.base.service.impl.ums;
 
 import cn.hutool.core.collection.CollUtil;
-import com.demo.base.dao.UmsAdminRoleRelationDao;
-import com.demo.base.service.UmsAdminCacheService;
-import com.demo.base.service.UmsAdminService;
+import com.demo.base.dao.ums.UmsAdminRoleRelationDao;
+import com.demo.base.service.ums.UmsAdminCacheService;
+import com.demo.base.service.ums.UmsAdminService;
 import com.demo.common.service.RedisService;
 import com.demo.mbg.mapper.UmsAdminRoleRelationMapper;
 import com.demo.mbg.model.UmsAdmin;

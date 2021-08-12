@@ -1,10 +1,11 @@
 package com.demo.base.config;
 
-import com.demo.base.service.UmsAdminService;
-import com.demo.base.service.UmsResourceService;
+import com.demo.base.service.ums.UmsAdminService;
+import com.demo.base.service.ums.UmsResourceService;
 import com.demo.mbg.model.UmsResource;
 import com.demo.security.component.DynamicSecurityService;
 import com.demo.security.config.SecurityConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@Slf4j
 public class DemoSecurityConfig extends SecurityConfig {
 
     @Autowired
@@ -44,6 +46,7 @@ public class DemoSecurityConfig extends SecurityConfig {
                 List<UmsResource> resourceList = resourceService.listAll();
                 for (UmsResource resource : resourceList) {
                     map.put(resource.getUrl(), new org.springframework.security.access.SecurityConfig(resource.getId() + ":" + resource.getName()));
+                    log.debug("map:{}\n{}",resource.getUrl(),map.get(resource.getUrl()));
                 }
                 return map;
             }
