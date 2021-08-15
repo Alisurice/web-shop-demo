@@ -1,17 +1,23 @@
 package com.demo.security.component;
 
 import cn.hutool.core.collection.CollUtil;
+import com.demo.security.config.IgnoreUrlsConfig;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.FilterInvocation;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
 
 import java.util.Collection;
 
 @Slf4j
 public class DynamicSecurityDecisionVoter implements AccessDecisionVoter<FilterInvocation> {
+    @Autowired
+    private IgnoreUrlsConfig ignoreUrlsConfig;
 
     @Override
     public int vote(Authentication authentication, FilterInvocation object, Collection<ConfigAttribute> attributes) {
@@ -27,6 +33,15 @@ public class DynamicSecurityDecisionVoter implements AccessDecisionVoter<FilterI
         log.debug("attributes："+ attributes);
         if (CollUtil.isEmpty(attributes)) {
             return ACCESS_ABSTAIN;
+        }
+        //在放行列表中的就别鉴权了，直接放行。之所以要这样，是为了配合权限配置，避免权限配置覆盖了这些url？
+        //当然，也可以写好resoure表的url拦截规则，但是那样更麻烦，所以还是这里多运转一下？
+        PathMatcher pathMatcher = new AntPathMatcher();
+        for (String path : ignoreUrlsConfig.getUrls()) {
+            if(pathMatcher.match(path,object.getRequestUrl())){
+                log.debug("直接放行");
+                return ACCESS_GRANTED;
+            }
         }
         //log.debug("before permitAll");
 
