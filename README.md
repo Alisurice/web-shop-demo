@@ -1,6 +1,7 @@
 # 商城项目 spring boot demo
 [toc]
 ## 项目介绍
+本商城项目基于[mall商城](https://github.com/macrozheng/mall)
 ### 技术选型
 
 | 技术                 | 说明                | 官网                                           |
