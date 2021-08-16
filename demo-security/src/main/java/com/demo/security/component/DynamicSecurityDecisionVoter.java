@@ -61,8 +61,8 @@ public class DynamicSecurityDecisionVoter implements AccessDecisionVoter<FilterI
                 result = ACCESS_DENIED;
 
                 //将访问所需资源或用户拥有资源进行比对
+                log.debug("authentication:{}",authentication.getAuthorities());
                 for (GrantedAuthority grantedAuthority : authentication.getAuthorities()) {
-                    log.debug("authentication:{}",authentication.getAuthorities());
                     if (attribute.getAttribute().equals(grantedAuthority.getAuthority())) {
                         return ACCESS_GRANTED;
                     }

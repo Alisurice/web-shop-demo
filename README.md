@@ -1,4 +1,5 @@
 # 商城项目 spring boot demo
+[toc]
 ## 项目介绍
 ### 技术选型
 
@@ -14,6 +15,31 @@
 | Hutool               | Java工具类库        | https://github.com/looly/hutool                |
 | PageHelper           | MyBatis物理分页插件 | http://git.oschina.net/free/Mybatis_PageHelper |
 | Swagger-UI           | 文档生成工具        | https://github.com/swagger-api/swagger-ui      |
+###TODOList
+-[ ] jwt注销功能。
+    > 目前的实现思路是用redis记录所有登录对象的token，并在注销时在redis中删除对应token。为了让注销生效，还要修改jwtTokenUtil.validateToken,如果在redis中检索不到token，那这个token也是无效的。   
+-[ ] 统计一个角色对应的用户数量，并记录在ums_role表的adminCount字段，
+    > 要让这个字段有效，我们可以修改updateRole，让他增删的时候都修改ums_role，因为要在原有基础上进行增减，所以这里要设定事务，设定为可重复读。  
+    或者暴力一点，在调用roleService.list()的时候再统计。这个可以用mybatis的多表关联查询实现
+##用户管理模块UMS
+主要是在后台用户管理模块中创建和管理用户的权限、角色。  
+在角色管理中创建角色，以及管理角色在资源、菜单上的访问权限。  
+而资源、菜单管理，则主要是用来为资源、菜单api加上访问权限
+###1. 用户与用户权限管理
+####后台用户管理 UmsAdminController
+> - 用户注册、登录、注销接口
+> - 用户信息、状态查询修改接口，
+> - 用户角色查询修改接口，为用户赋予角色
+###2. 权限管理
+ ####后台用户角色管理UmsRoleController
+> - 增删改查角色
+> - 给角色分配菜单
+> - 给角色分配资源
+ ####后台资源管理UmsResourceController
+> - 增删改查资源
+####后台菜单管理UmsMenuController
+> - 增删改查菜单
+
 
 ## Spring Security
 [Spring Security 基本原理](document/basicPrinciples.jpg)

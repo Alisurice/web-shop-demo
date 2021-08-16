@@ -47,9 +47,10 @@ public class DynamicSecurityMetadataSource implements FilterInvocationSecurityMe
         //获取访问该路径所需资源
         while (iterator.hasNext()) {
             String pattern = iterator.next();
-            log.debug("pattern:{},  match:{}",pattern,pathMatcher.match(pattern, path));
+            //log.debug("pattern:{},  match:{}",pattern,pathMatcher.match(pattern, path));
             if (pathMatcher.match(pattern, path)) {
-                log.debug("路径和模式配对，加载权限要求：configAttributes:  {}",configAttributeMap.get(pattern));
+                log.debug("pattern:{},  match:{}\n路径和模式配对，加载权限要求：configAttributes:  {}",
+                        pattern,pathMatcher.match(pattern, path),configAttributeMap.get(pattern));
                 configAttributes.add(configAttributeMap.get(pattern));
             }
         }
