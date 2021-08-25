@@ -10,7 +10,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.vote.UnanimousBased;
-import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -51,6 +50,7 @@ public class BaseSecurityConfig extends WebSecurityConfigurerAdapter {
         ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry
                 registry = httpSecurity.authorizeRequests();
 
+        //注意authorizeRequests() 所创建的 RequestMatcher 是有顺序的，所以要把不需要鉴权的放前，避免不断走认证过程
         //不需要保护的资源路径允许访问
         for (String url : ignoreUrlsConfig().getUrls()) {
             registry.antMatchers(url).permitAll();
@@ -63,20 +63,7 @@ public class BaseSecurityConfig extends WebSecurityConfigurerAdapter {
         registry.and()
                 .authorizeRequests().anyRequest().authenticated();
 
-        // 使用自定义的 accessDecisionManager
-        if(dynamicSecurityService != null){
-            log.debug("###accessDecisionManager");
-            registry.accessDecisionManager(accessDecisionManager())
-                    .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
-                        @Override
-                        public <O extends FilterSecurityInterceptor> O postProcess(
-                                O fsi) {
-                            fsi.setSecurityMetadataSource(dynamicSecurityMetadataSource());
-                            return fsi;
-                        }
-                    });
 
-        }
 
                 // 关闭跨站请求防护及不使用session
         registry.and()
@@ -95,10 +82,19 @@ public class BaseSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
+        // 使用自定义的 accessDecisionManager
+        if(dynamicSecurityService != null){
+            log.debug("###accessDecisionManager");
+            registry.filterSecurityInterceptorOncePerRequest(false);
+            registry.and().addFilterBefore(filterSecurityInterceptor(), FilterSecurityInterceptor.class);
+
+        }
+
 
 
 
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -166,6 +162,21 @@ public class BaseSecurityConfig extends WebSecurityConfigurerAdapter {
         log.debug("########DynamicSecurityMetadataSource");
         return new DynamicSecurityMetadataSource();
     }
+
+    //实测只能用mall的办法，把filter到manager都重写，不用自定义voter了，
+    //找不到配置setSecurityMetadataSource，使用这个必然导致认证过滤器失效，原因不明
+    @ConditionalOnBean(name = "dynamicSecurityService")
+    @Bean
+    public FilterSecurityInterceptor filterSecurityInterceptor() {
+        FilterSecurityInterceptor fsi = new FilterSecurityInterceptor();
+        fsi.setAccessDecisionManager(accessDecisionManager());
+        fsi.setSecurityMetadataSource(dynamicSecurityMetadataSource());
+        //System.out.println("#### filterSecurityInterceptor");
+        return fsi;
+
+    }
+
+
 
 
 }
