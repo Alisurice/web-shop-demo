@@ -6,14 +6,13 @@ import com.demo.base.vo.PmsProductParam;
 import com.demo.mbg.mapper.PmsProductMapper;
 import com.demo.mbg.model.PmsProduct;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Method;
 import java.util.List;
 
-@Service
+//@Service
 @Slf4j
 public class PmsProductServiceImpl implements PmsProductService {
     @Resource

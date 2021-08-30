@@ -15,6 +15,16 @@ spring:
   devtools:
     restart:
       enabled: true
+  rabbitmq:
+    host: localhost # rabbitmq的连接地址
+    port: 5672 # rabbitmq的连接端口号
+    virtual-host: /mall # rabbitmq的虚拟host
+    username: mall # rabbitmq的用户名
+    password: mall # rabbitmq的密码
+    publisher-confirm-type: correlated #消息发送到交换器确认
+    publisher-returns: true #消息发送到队列确认
+
+
 
 mybatis:
   mapper-locations:
@@ -39,6 +49,7 @@ jwt:
 secure:
   ignored:
     urls: #安全路径白名单
+      - /** # 方便测试，注意要删除
       - /swagger-ui.html
       - /swagger-resources/**
       - /swagger/**
@@ -56,10 +67,10 @@ secure:
       - /admin/logout
       - /minio/upload
 
-Spring:
 
 logging:
   level:
     com.demo.base: debug
 #    root: debug
     com.demo.security: debug
+

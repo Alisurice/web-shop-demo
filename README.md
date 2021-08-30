@@ -1,5 +1,4 @@
 # 商城项目 spring boot demo
-[toc]
 ## 项目介绍
 本商城项目基于[mall商城](https://github.com/macrozheng/mall)
 ### 技术选型
@@ -16,48 +15,48 @@
 | Hutool               | Java工具类库        | https://github.com/looly/hutool                |
 | PageHelper           | MyBatis物理分页插件 | http://git.oschina.net/free/Mybatis_PageHelper |
 | Swagger-UI           | 文档生成工具        | https://github.com/swagger-api/swagger-ui      |
-###TODOList
--[ ] jwt注销功能。
+### TODOList
+- [ ] jwt注销功能。
     > 目前的实现思路是用redis记录所有登录对象的token，并在注销时在redis中删除对应token。为了让注销生效，还要修改jwtTokenUtil.validateToken,如果在redis中检索不到token，那这个token也是无效的。   
--[ ] 统计一个角色对应的用户数量，并记录在ums_role表的adminCount字段，
+- [ ] 统计一个角色对应的用户数量，并记录在ums_role表的adminCount字段，
     > 要让这个字段有效，我们可以修改updateRole，让他增删的时候都修改ums_role，因为要在原有基础上进行增减，所以这里要设定事务，设定为可重复读。  
     或者暴力一点，在调用roleService.list()的时候再统计。这个可以用mybatis的多表关联查询实现
-##用户管理模块UMS
+## 用户管理模块UMS
 主要是在后台用户管理模块中创建和管理用户的权限、角色。  
 在角色管理中创建角色，以及管理角色在资源、菜单上的访问权限。  
 而资源、菜单管理，则主要是用来为资源、菜单api加上访问权限
-###1. 用户与用户权限管理
-####后台用户管理 UmsAdminController
+### 1. 用户与用户权限管理
+#### 后台用户管理 UmsAdminController
 > - 用户注册、登录、注销接口
 > - 用户信息、状态查询修改接口，
 > - 用户角色查询修改接口，为用户赋予角色
-###2. 权限管理
- ####后台用户角色管理UmsRoleController
+### 2. 权限管理
+#### 后台用户角色管理UmsRoleController
 > - 增删改查角色
 > - 给角色分配菜单
 > - 给角色分配资源
- ####后台资源管理UmsResourceController
+#### 后台资源管理UmsResourceController
 > - 增删改查资源
-####后台菜单管理UmsMenuController
+#### 后台菜单管理UmsMenuController
 > - 增删改查菜单
 
 
 ## Spring Security
 [Spring Security 基本原理](document/basicPrinciples.jpg)
 ### 大概的运转过程
-####1. SecurityContextPersistenceFilter
+#### 1. SecurityContextPersistenceFilter
 >SecurityContextPersistenceFilter是Security的拦截器，而且是拦截链中的第一个拦截器，请求来临时它会从HttpSession中把SecurityContext取出来，然后放入SecurityContextHolder。在所有拦截器都处理完成后，再把SecurityContext存入HttpSession，并清除SecurityContextHolder内的引用。
 
-####2.UsernamePasswordAuthenticationFilter
+#### 2.UsernamePasswordAuthenticationFilter
 >负责认证的过滤器。负责根据所请求的服务对身份证的认证情况的要求，过滤请求的过滤器
       
-####3. ExceptionTranslationFilter
+#### 3. ExceptionTranslationFilter
 >负责异常处理
 
-####4. FilterSecurityInterceptor
+#### 4. FilterSecurityInterceptor
 >负责授权。负责根据服务对权限的要求，过滤请求
 
-####5. Controller、Service、Dao
+#### 5. Controller、Service、Dao
 >通过了前面的拦截器后，就开始调用服务响应请求了。具体来说，就是触发request对应的controller响应请求。
 
 ### 直观的运转过程
@@ -107,7 +106,7 @@
     也就是说，要在Manager中配置好Voter、增加Voter。在config中我们只能拓展Manager。  
     具体来说，我们要在构造Mananger实例的时候，将要配置的Voter作为构造器的参数传入。
     
-###参考资料
+### 参考资料
 - [SpringSecurity+JWT认证流程解析 | 掘金新人第一弹](https://juejin.cn/post/6846687598442708999)
 - [SpringSecurity动态鉴权流程解析 | 掘金新人第二弹](https://juejin.cn/post/6847902222668431368)
 - [【龙飞】Spring Security 源码分析一：Spring Security 认证过程](https://www.iocoder.cn/Spring-Security/longfei/The-authentication-process/)
