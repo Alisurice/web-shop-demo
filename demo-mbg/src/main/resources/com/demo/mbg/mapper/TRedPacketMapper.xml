@@ -91,7 +91,7 @@
     select 
     <include refid="Base_Column_List" />
     from t_red_packet
-    where id = #{id,jdbcType=INTEGER} for update
+    where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_red_packet

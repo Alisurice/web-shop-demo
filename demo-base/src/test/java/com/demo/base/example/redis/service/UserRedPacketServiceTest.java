@@ -27,7 +27,7 @@ public class UserRedPacketServiceTest {
         CountDownLatch countDownLatch = new CountDownLatch(4);
         for(int count = 0; count < 4; count++){
             pool.execute(() -> {
-                for (int i = 0; i < 5000; i++) {
+                for (int i = 0; i < 600; i++) {
                     userRedPacketService.grabRedPacket(packet, i);
                     //System.out.println("result"+userRedPacketService.grabRedPacket(packet, i));
 
