@@ -117,7 +117,71 @@
 - [【龙飞】Spring Security 源码分析七：Spring Security 记住我](https://www.iocoder.cn/Spring-Security/longfei/Remember-Me/)
 
 
-     
-                                
-                    
+## 红包秒杀项目（高并发）
+使用了4个线程，每个线程重复访问600次，模拟高并发。提供三种能够解决超卖问题的解决方案。  
+具体代码可以查看RedisSecKill分支上的各个版本。
+
+### 悲观锁
+通过给查到的数据加行锁实现，速度非常慢。
+具体：TRedPacketMapper.xml，selectByPrimaryKey，where后加上for update。
+其实也可以改事务隔离级别为REPEATABLE-READ。
+
+### 乐观锁
+乐观锁的缺点是大幅增加了数据库的请求数，增加了数据库的压力  
+要点：
+1. 互斥资源要有version字段
+2. 获取数据时同时获取version
+3. 更新数据时也必须要同时更新version，同时也要用where version=旧version来保障数据还没有被修改。这就回避了CAS下的ABA问题
+4. 重入机制，它保障了在库存充足时，请求不会因为version对不上被拒，保障了库存充足时，大部分的请求都能够买到东西。
+
+### Redis实现高并发
+#### 流程
+1. 主线程
+2. 抢红包服务userRedPacketService
+3. 访问redis抢红包，具体来说   
+  	> a. 访问库存，大于1时执行b并且返回1，等于1时返回2，提示没有红包了。等于0时返回0   
+  	> b. 更新库存，向redis插入抢红包记录  
+  	
+    这两步操作要有原子性，从而保证可重复读   
+    
+4. 异步持久化
+  	1. 访问redis获取抢红包记录
+  	2. 将记录转换成DTO，再通过Mybatis插入到数据库，并更新库存
+
+#### 实践过程中遇到的问题
+##### 1. junit多线程下，资源的GC回收、掉线问题：
+因为我是使用junit、多线程模拟并发的。必须要保证主线程在所有的线程结束之后再结束。不然就会出现各种timeout、shutdown、closed。   
+原因不明，大概和主线程结束、spring容器中的资源被回收有关？   
+（不过如果走controller，走web，应该就不会遇到这种问题了，datasource应该不会再自动关闭，自动回收？）  
+    
+    
+大概遇到过这些错误：  
+pool提前关闭，导致持久化未能完成，Mysql事务回滚。出现这种情况的时候，有时有任何的报错，让人很莫名奇妙。
+> INFO 14852 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+
+可能会出现这些错误：
+> - java.sql.SQLException: No operations allowed after statement closed.
+> - Could not get a resource from the pool; nested exception is io.lettuce.core
+
+##### 2. 连接超时
+调试中，因为timeout设置不够，也会在debug的过程中出现问题，如redis:timeout:
+
+##### 3. redisTemplate和底层api的序列化问题
+显然获取byte[]的底层api不会自动进行序列化。比如loadScript。   
+
+通过Lettuce使用Lua脚本的注意事项：  
+> Lua脚本不会进行再次编码，传入什么就写入什么。所以必须要用redisTemplate的转码器转码，再传入Lua脚本。   
+  不然我们后面再通过redisTemplate从redis取数据的时候，是会进行反序列化的，这就会导致编码对不上，从而各种nil，各种报错，例如：
+
+> Could not read JSON: Unexpected character ('-' (code 44)): Expected space separating root-level values 
+
+##### 4、启动了太多的其他的组件
+可以通过配置yml解决
+> spring:autoconfigure:exclude:
+
+
+
+
+
+
 
