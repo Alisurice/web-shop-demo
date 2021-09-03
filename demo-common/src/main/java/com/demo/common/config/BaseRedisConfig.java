@@ -35,6 +35,13 @@ public class BaseRedisConfig {
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashValueSerializer(serializer);
         redisTemplate.afterPropertiesSet();
+        //redisTemplate.execute(new RedisCallback<Object>() {
+        //
+        //    @Override
+        //    public Object doInRedis(RedisConnection redisConnection) throws DataAccessException {
+        //        return redisConnection.hSet("htest".getBytes(),"key".getBytes(),"value".getBytes());
+        //    }
+        //});
         return redisTemplate;
     }
 
